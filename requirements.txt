@@ -1,0 +1,12 @@
+# Dashboard interface and interactive controls.
+streamlit>=1.36
+
+# Yahoo Finance price history and company fundamentals.
+yfinance>=0.2.40
+
+# Tabular data processing and numerical indicator calculations.
+pandas>=2.0
+numpy>=1.24
+
+# Interactive candlestick, moving-average, and RSI charts.
+plotly>=5.20
