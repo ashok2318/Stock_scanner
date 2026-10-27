@@ -234,6 +234,12 @@ def snapshot(t):
 # ----------------------------------------------------------------------------
 # Sidebar inputs
 # ----------------------------------------------------------------------------
+page = st.sidebar.radio('Screen', ['Dashboard', '1-Year Cycle Analysis'])
+if page == '1-Year Cycle Analysis':
+    from cycle_analysis import render_cycle_page
+    render_cycle_page()
+    st.stop()
+
 st.sidebar.markdown('### Watchlist')
 raw = st.sidebar.text_input('Tickers', 'WDC,MU,STX,AMD,NVDA')
 watch = [x.strip().upper() for x in raw.split(',') if x.strip()]
