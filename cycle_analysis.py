@@ -127,10 +127,22 @@ def render_cycle_page():
     zones = repeated_zones(points, tolerance)
     for kind, group in zones:
         fig.add_hrect(y0=min(x['price'] for x in group)*.999, y1=max(x['price'] for x in group)*1.001,
-                      fillcolor='#ef4444' if kind == 'High' else '#10b981', opacity=.1, line_width=0,
-                      annotation_text=f'{"Rejection" if kind == "High" else "Support"} zone · {len(group)} touches')
+                      fillcolor='#ef4444' if kind == 'High' else '#10b981', opacity=.1, line_width=0)
     fig.update_layout(height=570, hovermode='x unified', legend_orientation='h', margin=dict(l=15,r=15,t=40,b=15), yaxis_title='Adjusted price', xaxis_rangeslider_visible=True)
     st.plotly_chart(fig, use_container_width=True)
+    if zones:
+        st.markdown('**Repeated price zones**')
+        st.caption('Red shading = rejection zones · Green shading = support zones. Details are listed below to keep the chart clear.')
+        zone_rows = [{'Zone': 'Rejection' if kind == 'High' else 'Support',
+                      'Lower price': min(x['price'] for x in group),
+                      'Upper price': max(x['price'] for x in group),
+                      'Touches': len(group),
+                      'First touch': min(x['date'] for x in group).strftime('%b %d, %Y'),
+                      'Last touch': max(x['date'] for x in group).strftime('%b %d, %Y')}
+                     for kind, group in zones]
+        st.dataframe(pd.DataFrame(zone_rows).sort_values('Lower price', ascending=False).style.format(
+            {'Lower price': '{:,.2f}', 'Upper price': '{:,.2f}'}),
+            hide_index=True, use_container_width=True)
     st.caption('Zones group at least two confirmed highs or lows within the chosen price tolerance. They describe historical clusters; they do not establish future support or resistance.')
     if cycles.empty:
         st.info('No completed low → high → low cycles at these settings. Try a smaller reversal threshold or shorter confirmation spacing.')
